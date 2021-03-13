@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".FileActivity">
 
-    <Button
-        android:id="@+id/btn_newFile"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/file_name"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="+ New File"
+        android:layout_centerHorizontal="true"
+        android:textSize="30dp"
         />
 
     <ListView
-        android:id="@+id/listview_files"
+        android:id="@+id/file_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_newFile"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="50dp"
         />
 
 </RelativeLayout>
