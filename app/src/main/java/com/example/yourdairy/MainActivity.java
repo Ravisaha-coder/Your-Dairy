@@ -1,6 +1,9 @@
 package com.example.yourdairy;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -18,13 +21,11 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText editText;
     Button btn_newFile;
     DBHelper db;
-    ListView listview;
-    Object obj;
-    ArrayList arrayList,fileNames;
-    ArrayAdapter arrayAdapter;
+    ArrayList fileNames;
+    FilesAdapter filesAdapter;
+    RecyclerView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,11 +35,12 @@ public class MainActivity extends AppCompatActivity {
     public void initGui(){
 
         btn_newFile = findViewById(R.id.btn_newFile);
-        listview = findViewById(R.id.listview_files);
+        recyclerView = (RecyclerView) findViewById(R.id.rv_fileNames);
         db = new DBHelper(this);
-        arrayList = db.getFileNames();
-        arrayAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1,arrayList);
-        listview.setAdapter(arrayAdapter);
+        fileNames = db.getFileNames();
+        filesAdapter = new FilesAdapter(fileNames);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(filesAdapter);
 
         btn_newFile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,29 +50,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this,FileActivity.class);
-                String fileCreatets = (String) arrayList.get(position);
-                FileObj fileObj = db.getFileByCreatets(fileCreatets);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("fileObj", fileObj);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
     }
 
     @Override
     public void onResume(){
         super.onResume();
         initGui();
-        arrayList = db.getFileNames();
-        arrayAdapter.notifyDataSetChanged();
-        listview.invalidateViews();
-        listview.refreshDrawableState();
-
+        fileNames = db.getFileNames();
+        filesAdapter.notifyDataSetChanged();
     }
 }

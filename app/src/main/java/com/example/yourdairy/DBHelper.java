@@ -8,7 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String FILE_DATA = "fileData";
@@ -69,7 +73,13 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
+        Date utcDate = new Date();
+        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+        String istDate = formatter.format(utcDate);
+
         contentValues.put(FILE_DATA, data);
+        contentValues.put("createts",istDate);
         long result = db.insert("myDairy",null, contentValues);
         if(result == -1){
             return false;
@@ -121,11 +131,23 @@ public class DBHelper extends SQLiteOpenHelper {
         FileObj fileObj = new FileObj();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from myDairy where createts='"+createts+"'", null);
-        /*Cursor cursor = db.query("myDairy", new String[] {createts, FILE_DATA }, createts + "=?",
-                new String[] { String.valueOf(createts) }, null, null, null, null);
-        */cursor.moveToFirst();
+        cursor.moveToFirst();
         fileObj.setFileName(cursor.getString(cursor.getColumnIndex("createts")));
         fileObj.setFileData(cursor.getString(cursor.getColumnIndex(cursor.getColumnName(2))));
         return fileObj;
+    }
+
+    public boolean deleteFileByCreatets(String createts) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from myDairy where createts='"+createts+"'", null);
+        cursor.moveToFirst();
+        Integer deletingId = Integer.valueOf(cursor.getString(cursor.getColumnIndex("id")));
+        long result = db.delete("myDairy","id="+deletingId,null);
+        if(result == -1){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 }

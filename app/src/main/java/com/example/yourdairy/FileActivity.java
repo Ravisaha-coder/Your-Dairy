@@ -3,9 +3,11 @@ package com.example.yourdairy;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -15,6 +17,7 @@ public class FileActivity extends AppCompatActivity {
     FileObj fileObj;
     ArrayList arrayList = new ArrayList();
     ArrayAdapter dataAdapter;
+    DBHelper db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,5 +33,18 @@ public class FileActivity extends AppCompatActivity {
 
         fileData = findViewById(R.id.file_data);
         fileData.setAdapter(dataAdapter);
+    }
+
+    public void deleteItem(View view){
+        db = new DBHelper(view.getContext());
+        boolean result = db.deleteFileByCreatets(fileObj.getFileName());
+        if(result){
+            Toast.makeText(FileActivity.this, "File Deleted",Toast.LENGTH_LONG).show();
+            finish();
+        }
+        else{
+            Toast.makeText(FileActivity.this, "Failed to delete file.",Toast.LENGTH_SHORT).show();
+        }
+
     }
 }

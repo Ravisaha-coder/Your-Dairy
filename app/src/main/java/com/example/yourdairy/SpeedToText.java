@@ -6,11 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -18,55 +15,40 @@ import java.util.Locale;
 
 public class SpeedToText extends AppCompatActivity {
 
-    EditText editText;
-    Button btn_insert,btn_save;
+    Button btn_reset,btn_save;
     DBHelper db;
-    ListView listview;
-    TextView textviewData;
+    EditText editTextData;
 
-    ArrayList arrayList;
-    ArrayAdapter arrayAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speed_to_text);
 
-        //btn_insert = findViewById(R.id.btn_insert);
+        btn_reset = findViewById(R.id.reset_data);
         btn_save = findViewById(R.id.save_data);
-        //editText = findViewById(R.id.et_view);
-        textviewData = findViewById(R.id.textview_data);
+        editTextData = findViewById(R.id.edittext_data);
         db = new DBHelper(this);
 
-        /*arrayList = db.getdata();
-        arrayAdapter = new ArrayAdapter(SpeedToText.this, android.R.layout.simple_list_item_1,arrayList);
-        listview.setAdapter(arrayAdapter);
-*/      textviewData.setText(db.getdata());
+        editTextData.setText(db.getdata());
 
-        /*btn_insert.setOnClickListener(new View.OnClickListener() {
+        btn_reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String dataTxt = editText.getText().toString();
-                Boolean checkInsertData = db.insertData(dataTxt);
-                if(checkInsertData == true){
-                    Toast.makeText(SpeedToText.this, "Inserted seccessfully.",Toast.LENGTH_SHORT).show();
+                Boolean checkResettData = db.resetData();;
+                if(checkResettData == true){
+                    Toast.makeText(SpeedToText.this, "Reset Successfullly",Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    Toast.makeText(SpeedToText.this, "Inserted seccessfully.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SpeedToText.this, "Error in reseting data",Toast.LENGTH_SHORT).show();
                 }
-                editText.setText("");
-                textviewData.setText(db.getdata());
-                *//*arrayList.clear();
-                arrayList.addAll(db.getdata());
-                arrayAdapter.notifyDataSetChanged();
-                listview.invalidateViews();
-                listview.refreshDrawableState();*//*
+                editTextData.setText("");
             }
         });
 
-        */btn_save.setOnClickListener(new View.OnClickListener() {
+        btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String dataTxt = textviewData.getText().toString();
+                String dataTxt = editTextData.getText().toString();
                 //Toast.makeText(SpeedToText.this, dataTxt,Toast.LENGTH_SHORT).show();
                 Boolean checkInsertFile = db.saveFile(dataTxt);
                 if(checkInsertFile == true){
@@ -106,7 +88,7 @@ public class SpeedToText extends AppCompatActivity {
                         Toast.makeText(this, "Retry please !!", Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        textviewData.setText(db.getdata());
+                        editTextData.setText(db.getdata());
                     }
                 }
                 break;
