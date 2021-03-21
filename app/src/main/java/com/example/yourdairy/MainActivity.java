@@ -1,58 +1,62 @@
 package com.example.yourdairy;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText editText;
-    Button btn_insert;
+    Button btn_newFile;
     DBHelper db;
-    ListView listview;
-
-    ArrayList arrayList;
-    ArrayAdapter arrayAdapter;
+    ArrayList fileNames;
+    FilesAdapter filesAdapter;
+    RecyclerView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initGui();
+    }
+    public void initGui(){
 
-        btn_insert = findViewById(R.id.btn_insert);
-        editText = findViewById(R.id.et_view);
-        listview = findViewById(R.id.listview);
+        btn_newFile = findViewById(R.id.btn_newFile);
+        recyclerView = (RecyclerView) findViewById(R.id.rv_fileNames);
         db = new DBHelper(this);
+        fileNames = db.getFileNames();
+        filesAdapter = new FilesAdapter(fileNames);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(filesAdapter);
 
-        arrayList = db.getdata();
-        arrayAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1,arrayList);
-        listview.setAdapter(arrayAdapter);
-
-        btn_insert.setOnClickListener(new View.OnClickListener() {
+        btn_newFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String dataTxt = editText.getText().toString();
-                Boolean checkInsertData = db.insertData(dataTxt);
-                if(checkInsertData == true){
-                    Toast.makeText(MainActivity.this, "Inserted seccessfully.",Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Toast.makeText(MainActivity.this, "Inserted seccessfully.",Toast.LENGTH_SHORT).show();
-                }
-                editText.setText("");
-                arrayList.clear();
-                arrayList.addAll(db.getdata());
-                arrayAdapter.notifyDataSetChanged();
-                listview.invalidateViews();
-                listview.refreshDrawableState();
+
+                Intent intent = new Intent(MainActivity.this, SpeedToText.class);
+                startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        initGui();
+        fileNames = db.getFileNames();
+        filesAdapter.notifyDataSetChanged();
     }
 }
