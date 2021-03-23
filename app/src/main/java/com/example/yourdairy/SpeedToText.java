@@ -54,6 +54,7 @@ public class SpeedToText extends AppCompatActivity {
                 if(checkInsertFile == true){
                     Toast.makeText(SpeedToText.this, "File Saved.",Toast.LENGTH_SHORT).show();
                     db.resetData();
+                    finish();
                 }
                 else{
                     Toast.makeText(SpeedToText.this, "Error While saving file.",Toast.LENGTH_SHORT).show();
